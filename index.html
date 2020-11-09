@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <title>Crud Vue.js</title>
+    <meta name="author" content="Your Name">
+    <meta name="description" content="Example description">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container">
+        <h1>Crud vue.js</h1>
+        <main id="app">
+            <router-view></router-view>
+        </main>
+    </div>
+
+    <template id="product">
+        <div>
+            <b>Nome</b>
+            <h2>{{ product.name }}</h2>
+            <b>Description: </b>
+            <div>{{ product.description }}</div>
+            <b>Email</b>
+            <div>{{ product.email }}</div>
+            <br />
+            <a>
+                <router-link to="/">Voltar para lista</router-link>
+            </a>
+        </div>
+    </template>
+
+    <template id="product-list">
+        <div>
+            <div class="actions">
+                <a class="btn btn-default">
+                    <router-link :to="{path: '/add-product'}">
+                       
+                        Adicionar
+                    </router-link>
+                </a>
+            </div>
+            <div class="filters row">
+                <div class="form-group col-sm-3">
+                    <label for="search-element">Buscar</label>
+                    <input v-model="searchKey" class="form-control" id="search-element" requred />
+                </div>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Email</th>
+                        <th class="col-sm-2">Editar/Deletar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="product in filteredProducts">
+                        <!-- tr v-for="product in products" -->
+                        <!-- tr v-for="product in products | filterBy searchKey in 'name'" -->
+                        <td>
+                            <a>
+                                <router-link :to="{name: 'product', params: {product_id: product.id}}">{{ product.name }}</router-link>
+                            </a>
+                        </td>
+                        <td>{{ product.description }}</td>
+                        <td>
+                            {{ product.email }}
+                            
+                        </td>
+
+                        <td> <router-link :to="{name: 'product-edit', params: {product_id: product.id}}">
+                            <a class="btn btn-info btn-sm" >
+                               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5L13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175l-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                    </svg>
+                                </a></router-link>
+                            
+                            <router-link :to="{name: 'product-delete', params: {product_id: product.id}}">
+                            
+                            <a class="btn btn-danger btn-sm">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
+                                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4L4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
+                                    </svg>
+                                </a>
+                                </router-link>
+                            
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </template>
+
+
+    <template id="add-product">
+        <div>
+            <h2>Adicionar usuario</h2>
+            <form v-on:submit="createProduct">
+                <div class="form-group">
+                    <label for="add-name">Nome</label>
+                    <input class="form-control" id="add-name" v-model="product.name" required />
+                </div>
+                <div class="form-group">
+                    <label for="add-description">Descrição</label>
+                    <textarea class="form-control" id="add-description" rows="10" v-model="product.description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="name" for="add-email">Email</label>
+                    <input type="email" name="email" id="add-email" required="" :class=" { email , error: !email.valid }" class="form-control" v-model="product.email">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Criar</button>
+                <a class="btn btn-default">
+                    <router-link to="/">Cancelar</router-link>
+                </a>
+            </form>
+        </div>
+    </template>
+
+    <template id="product-edit">
+        <div>
+            <h2>Editar usuario</h2>
+            <form v-on:submit="updateProduct">
+                <div class="form-group">
+                    <label for="edit-name">Nome</label>
+                    <input class="form-control" id="edit-name" v-model="product.name" required />
+                </div>
+                <div class="form-group">
+                    <label for="edit-description">Descrição</label>
+                    <textarea class="form-control" id="edit-description" rows="3" v-model="product.description"></textarea>
+                </div>
+                <div class="form-group">
+                    <label class="name" for="add-email">Email</label>
+                    <input type="email" name="email" id="add-email" required="" :class=" { email , error: !email.valid }" class="form-control" v-model="product.email">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <a class="btn btn-default">
+                    <router-link to="/">Cancelar</router-link>
+                </a>
+            </form>
+        </div>
+    </template>
+
+    <template id="product-delete">
+        <div>
+            <h2>Deletar usuario {{ product.name }}</h2>
+            <form v-on:submit="deleteProduct">
+                <p>Tem certeza de deseja Deletar usuario?</p>
+                <button type="submit" class="btn btn-danger">Deletar</button>
+                <a class="btn btn-default">
+                    <router-link to="/">Cancelar</router-link>
+                </a>
+            </form>
+        </div>
+    </template>
+
+
+    <script src="https://unpkg.com/vue@2.0.0/dist/vue.js"></script>
+    <script src="https://unpkg.com/vue-router@2.0.0/dist/vue-router.js"></script>
+
+    <script src="code.js" src=""></script>
+</body>
+
+</html>
